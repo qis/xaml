@@ -6,7 +6,7 @@ set(PROJECT_VENDOR "Company")
 configure_file(res/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/version.h LF)
 
 # Sources
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.[hc]pp src/*.xaml)
+file(GLOB_RECURSE sources src/*.[hc]pp src/*.xaml)
 
 # Executable
 add_executable(${PROJECT_NAME} WIN32 ${sources} src/main.manifest src/main.rc)
@@ -54,7 +54,3 @@ if(NOT CMAKE_BUILD_TYPE MATCHES Debug)
 
   include(CPack)
 endif()
-
-# Visual Studio
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
