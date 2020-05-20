@@ -1,10 +1,8 @@
 # Xaml
 C++ xaml project template.
 
-## Requirements
-Use [Visual Studio 2019](https://visualstudio.microsoft.com/) on Windows.
-
-Use [Vcpkg](https://github.com/microsoft/vcpkg) to install dependencies.
+## Dependencies
+See [qis/toolchains](https://github.com/qis/toolchains) for vcpkg setup instructions.
 
 ```sh
 vcpkg install fmt
