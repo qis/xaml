@@ -1,9 +1,11 @@
 #include <version.h>
 
-class Application {
+class Application
+{
 public:
-  Application(HINSTANCE instance) :
-    manager_(winrt::Windows::UI::Xaml::Hosting::WindowsXamlManager::InitializeForCurrentThread()) {
+  Application(HINSTANCE instance)
+    : manager_(winrt::Windows::UI::Xaml::Hosting::WindowsXamlManager::InitializeForCurrentThread())
+  {
     // Load window icon.
     const auto icon = LoadIcon(instance, MAKEINTRESOURCE(IDI_MAIN));
 
@@ -14,7 +16,8 @@ public:
     wc.lpfnWndProc = [](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) -> LRESULT {
       auto self = reinterpret_cast<Application*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
       if (msg == WM_NCCREATE) {
-        self = reinterpret_cast<Application*>(reinterpret_cast<LPCREATESTRUCT>(lparam)->lpCreateParams);
+        self = reinterpret_cast<Application*>(
+          reinterpret_cast<LPCREATESTRUCT>(lparam)->lpCreateParams);
         SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
         EnableNonClientDpiScaling(hwnd);
         self->hwnd_ = hwnd;
@@ -22,7 +25,8 @@ public:
         self->hwnd_ = nullptr;
         SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
       }
-      return self ? self->OnMessage(hwnd, msg, wparam, lparam) : DefWindowProc(hwnd, msg, wparam, lparam);
+      return self ? self->OnMessage(hwnd, msg, wparam, lparam)
+                  : DefWindowProc(hwnd, msg, wparam, lparam);
     };
     wc.hInstance = instance;
     wc.hIcon = icon;
@@ -32,7 +36,11 @@ public:
     wc.lpszClassName = WINDOW_CLASS;
 
     if (!RegisterClassEx(&wc)) {
-      MessageBox(nullptr, "Could not register window class.", WINDOW_TITLE, MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+      MessageBox(
+        nullptr,
+        "Could not register window class.",
+        WINDOW_TITLE,
+        MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
       PostQuitMessage(1);
       return;
     }
@@ -42,14 +50,21 @@ public:
     const auto ws = WS_OVERLAPPEDWINDOW;
     const auto wx = CW_USEDEFAULT;
     const auto wy = CW_USEDEFAULT;
-    if (!CreateWindowEx(es, WINDOW_CLASS, WINDOW_TITLE, ws, 0, 0, wx, wy, nullptr, nullptr, instance, this)) {
-      MessageBox(nullptr, "Could not create application window.", WINDOW_TITLE, MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+    if (!CreateWindowEx(
+          es, WINDOW_CLASS, WINDOW_TITLE, ws, 0, 0, wx, wy, nullptr, nullptr, instance, this))
+    {
+      MessageBox(
+        nullptr,
+        "Could not create application window.",
+        WINDOW_TITLE,
+        MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
       PostQuitMessage(1);
       return;
     }
   }
 
-  int Run() {
+  int Run()
+  {
     // Run the main message loop.
     MSG msg = {};
     while (GetMessage(&msg, nullptr, 0, 0)) {
@@ -66,7 +81,8 @@ public:
   }
 
 private:
-  void OnCreate() {
+  void OnCreate()
+  {
     // Get window size.
     RECT wrc = {};
     GetWindowRect(hwnd_, &wrc);
@@ -119,14 +135,16 @@ private:
     const auto data = static_cast<const char*>(LockResource(hmem));
     const auto xaml = winrt::to_hstring(std::string_view(data, size));
     root_ = winrt::Windows::UI::Xaml::Markup::XamlReader::Load(xaml).as<decltype(root_)>();
-    root_.Background(winrt::Windows::UI::Xaml::Media::SolidColorBrush(winrt::Windows::UI::Colors::Transparent()));
+    root_.Background(
+      winrt::Windows::UI::Xaml::Media::SolidColorBrush(winrt::Windows::UI::Colors::Transparent()));
     root_.Width(crc.right - crc.left);
     root_.Height(crc.bottom - crc.top);
     source_.Content(root_);
 
     // Set background color.
     winrt::Windows::UI::ViewManagement::UISettings settings;
-    const auto background = settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    const auto background = settings.GetColorValue(
+      winrt::Windows::UI::ViewManagement::UIColorType::Background);
     const auto background_brush = CreateSolidBrush(RGB(background.R, background.G, background.B));
     SetClassLongPtr(hwnd_, GCLP_HBRBACKGROUND, reinterpret_cast<LONG_PTR>(background_brush));
 
@@ -144,7 +162,8 @@ private:
     ShowWindow(hwnd_, SW_SHOW);
   }
 
-  void OnDestroy() {
+  void OnDestroy()
+  {
     // Destroy Xaml objects.
     root_ = nullptr;
     source_ = nullptr;
@@ -154,7 +173,8 @@ private:
     PostQuitMessage(0);
   }
 
-  void OnSize(int cx, int cy) {
+  void OnSize(int cx, int cy)
+  {
     SetWindowPos(xaml_, nullptr, 0, 0, cx, cy, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
     if (root_) {
       root_.Width(cx);
@@ -162,11 +182,20 @@ private:
     }
   }
 
-  void OnDpiChanged(UINT dpi, LPCRECT rc) {
-    SetWindowPos(hwnd_, nullptr, rc->left, rc->top, rc->right - rc->left, rc->bottom - rc->top, SWP_NOACTIVATE | SWP_NOZORDER);
+  void OnDpiChanged(UINT dpi, LPCRECT rc)
+  {
+    SetWindowPos(
+      hwnd_,
+      nullptr,
+      rc->left,
+      rc->top,
+      rc->right - rc->left,
+      rc->bottom - rc->top,
+      SWP_NOACTIVATE | SWP_NOZORDER);
   }
 
-  void OnCommand(UINT id) {
+  void OnCommand(UINT id)
+  {
     switch (id) {
     case IDM_EXIT:
       PostMessage(hwnd_, WM_CLOSE, 0, 0);
@@ -174,7 +203,8 @@ private:
     }
   }
 
-  LRESULT OnMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+  LRESULT OnMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+  {
     try {
       switch (msg) {
       case WM_CREATE:
@@ -215,7 +245,8 @@ private:
   winrt::Windows::UI::Xaml::Controls::Grid root_{ nullptr };
 };
 
-int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR cmd, int show) {
+int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR cmd, int show)
+{
   // Initialize Windows Runtime and COM.
   winrt::init_apartment(winrt::apartment_type::single_threaded);
 
