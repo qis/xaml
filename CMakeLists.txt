@@ -23,15 +23,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 find_package(fmt CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
-# Install
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
-
-if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
-  install(FILES $<TARGET_FILE_DIR:${PROJECT_NAME}>/fmt.dll DESTINATION .)
-endif()
-
-# Package
 if(NOT CMAKE_BUILD_TYPE MATCHES Debug)
+  # Install
+  install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
+
+  if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
+    install(FILES $<TARGET_FILE_DIR:${PROJECT_NAME}>/fmt.dll DESTINATION .)
+  endif()
+
+  # Package
   string(UUID PROJECT_GUID TYPE SHA1
     NAMESPACE 6BA7B814-9DAD-11D1-80B4-00C04FD430C8
     NAME "CN=${PROJECT_NAME}, O=${PROJECT_VENDOR}")

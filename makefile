@@ -22,12 +22,12 @@ clean:
 
 build/windows/debug/rules.ninja: CMakeLists.txt
 	@cmake -GNinja -DCMAKE_BUILD_TYPE=Debug \
-	  -DCMAKE_INSTALL_PREFIX="$(MAKEDIR)\build\install" \
 	  -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_ROOT)\triplets\toolchains\windows.cmake" \
+	  -DCMAKE_INSTALL_PREFIX="build/install" \
 	  -B build/windows/debug
 
 build/windows/release/rules.ninja: CMakeLists.txt
 	@cmake -GNinja -DCMAKE_BUILD_TYPE=Release \
-	  -DCMAKE_INSTALL_PREFIX="$(MAKEDIR)\build\install" \
 	  -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_ROOT)\triplets\toolchains\windows.cmake" \
+	  -DCMAKE_INSTALL_PREFIX="build/install" \
 	  -B build/windows/release
